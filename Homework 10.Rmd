@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyr)
 library(Lock5Data)
 library(tidyverse)
+library(lubridate)
 
 ```
 
@@ -36,3 +37,65 @@ knitr::kable(gss_cat_mar %>%
 ```
 
 ^[Question 1 complete]
+
+
+
+```{r}
+gss_cat_prop <- gss_cat_mar %>%
+  count(year, marital) %>%
+  group_by(year) %>%
+  mutate(proportion = n / sum(n))
+```
+
+^[Question 2 Complete]
+
+```{r}
+gss_cat_prop_order <- gss_cat_prop %>%
+  arrange(desc(year))
+
+
+```
+^[Question 3 Complete]
+
+```{r}
+ggplot(gss_cat_prop_order, aes(y = proportion, x = year, color = marital)) +
+  geom_line()
+```
+^[Question 4 complete]
+
+## Los Angeles Lakers
+
+```{r}
+
+knitr::kable(lubridate::lakers %>% 
+               mutate(date = as_date(date))%>%
+               select(date, opponent, game_type, time) %>%
+               head(n = 6))
+```
+
+The date data is wrong, because when converting directly from integer to date it is reading the date as a singular number instead of a date. While we can see that the date is an actual date not separated by slashes, by using the as_date command it ends up viewing the initial date as days and adding them to 1970-01-01.^[Question 1 complete]
+
+
+```{r}
+lakers_new <-lubridate::lakers %>% 
+               mutate(date = ymd(date))
+               
+knitr::kable(lakers_new %>%
+               select(date, opponent, game_type, time) %>%
+               head(n = 6))
+
+```
+
+This works better because you are telling it to read the date data as a year, month, and day. By telling it the specific values it is reading it helps it know how to convert it. ^[Question 2 complete]
+
+```{r}
+distinct_lakers <- lakers_new %>%
+  distinct(date) %>%
+  mutate(day_of_week = wday(date, label = TRUE, abbr = FALSE))
+
+ggplot(distinct_lakers, aes(x = day_of_week )) +
+  geom_bar() +
+  labs(x = "Day of Week")
+```
+
+^[Question 3 complete]
