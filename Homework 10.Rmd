@@ -1,0 +1,38 @@
+---
+title: "Homework 9"
+author: "Marley McGehee"
+date: "4/02/2026"
+output:  
+  html_document:
+    code_folding: hide
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyr)
+library(Lock5Data)
+library(tidyverse)
+
+```
+
+
+## General Social Survey
+
+### Marital Status
+```{r}
+gss_cat_mar <- gss_cat %>% 
+  mutate(marital = fct_collapse(marital,
+"Pre Marriage" = c("Never married"),
+"Marriage" = c("Married", "Separated"),
+"Post Marriage" = c("Divorced", "Widowed"),
+"Missing" = c("No answer")
+)) 
+
+
+knitr::kable(gss_cat_mar %>% 
+  count(marital))
+```
+
+^[Question 1 complete]
